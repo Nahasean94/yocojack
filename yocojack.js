@@ -51,3 +51,27 @@ function multiple  (input) {
     // holds a value of the card number
     return Number.parseInt(input)
 }
+
+/**
+ * This function tries to obtain the raw points of each holder. The raw
+ * points are purely based on the value of the card number. This helps
+ * determine if a player has more than 21 points or less, which is the 1st
+ * step in eliminating a player or also determine who of the two has higher
+ * points that are less than 21.
+ * @param cards
+ * @returns {number}
+ */
+function playerRawPoints (cards)  {
+    // const cards = data.playerA
+
+    let points = 0//holds the points for the given set of cards
+    cards.map(card => {
+        //For each card, extract the suite from the string and only retain
+        // the card number, e.g if five AS, return A as the card number
+        const cardNumber = card.substring(0, card.length - 1)
+        //tally the points by obtaining the value of each card number
+        points += cardNumberValue(cardNumber)
+    })
+    //return the total points
+    return points
+}
