@@ -11,6 +11,56 @@ const data = {
     ]
 }
 
+/**
+ * This function determines who the winner is based on their raw points.
+ * Only if they tie do we go and use recursion to determine the highest
+ * card, etc
+ * @param playerA
+ * @param playerB
+ * @returns {string|*}
+ */
+function determineWinner(playerA, playerB, expectedResult) {
+    let isExpectedResult = false
+    let playerAWins = false
+    const playerAPoints = playerRawPoints(playerA)
+    const playerBPoints = playerRawPoints(playerB)
+
+
+    if (playerAPoints > 21 && playerBPoints > 21) {
+        playerAWins = false
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Both lose", isExpectedResult]
+    } else if (playerAPoints > 21 && playerBPoints <= 21) {
+        playerAWins = false
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Player B Wins", isExpectedResult]
+    } else if (playerAPoints <= 21 && playerBPoints > 21) {
+        playerAWins = true
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Player A Wins", isExpectedResult]
+    } else if (playerAPoints > playerBPoints) {
+        playerAWins = true
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Player A Wins", isExpectedResult]
+    } else if (playerBPoints > playerAPoints) {
+        playerAWins = false
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Player B Wins", isExpectedResult]
+    } else {
+        return determineWinnerRecursively(playerA, playerBPoints, expectedResult)
+    }
+}
+
 /** This function takes the suite a belongs to and returns a value to show
  *  which card is most import. This is to fulfil the condition S>H>C>D
  *
@@ -78,51 +128,49 @@ function playerRawPoints(cards) {
 }
 
 /**
- * This function determines who the winner is based on their raw points.
- * Only if they tie do we go and use recursion to determine the highest
- * card, etc
- * @param playerA
- * @param playerB
- * @returns {string|*}
+ * This function sorts the card numbers according to their value.
+ * The expected result is A K Q J 10 9 8 7 6 5 4 3 2
+ * @param arr
+ * @returns {*[]}
  */
-function determineWinner(playerA, playerB, expectedResult) {
-    let isExpectedResult = false
-    let playerAWins = false
-    const playerAPoints = playerRawPoints(playerA)
-    const playerBPoints = playerRawPoints(playerB)
+function sortCardNumbers (arr)  {
 
+    const numbers = []
+    //the arrays below hold the various instances of each card number
+    // since one could have more than one A or J, etc.
+    const aArray = []
+    const kArray = []
+    const qArray = []
+    const jArray = []
+    /**
+     * Here we sort tha letters to match the order A K Q J.
+     */
+    arr.map(ar => {
+        switch (ar.substring(0, ar.length - 1)) {
+            case "A":
+                aArray.push(ar)
+                break
+            case "K":
+                kArray.push(ar)
+                break
+            case "Q":
+                qArray.push(ar)
+                break
+            case "J":
+                jArray.push(ar)
+                break
+            default:
+                numbers.push(ar)
 
-    if (playerAPoints > 21 && playerBPoints > 21) {
-        playerAWins = false
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
         }
-        return ["Both lose", isExpectedResult]
-    } else if (playerAPoints > 21 && playerBPoints <= 21) {
-        playerAWins = false
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
-        }
-        return ["Player B Wins", isExpectedResult]
-    } else if (playerAPoints <= 21 && playerBPoints > 21) {
-        playerAWins = true
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
-        }
-        return ["Player A Wins", isExpectedResult]
-    } else if (playerAPoints > playerBPoints) {
-        playerAWins = true
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
-        }
-        return ["Player A Wins", isExpectedResult]
-    } else if (playerBPoints > playerAPoints) {
-        playerAWins = false
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
-        }
-        return ["Player B Wins", isExpectedResult]
-    } else {
-        return determineWinnerRecursively(playerA, playerBPoints, expectedResult)
-    }
+    })
+
+//sort the numbers from largest to smallest
+    const sortedNumbers = numbers.sort((a, b) => b.substring(0, b.length - 1) - a.substring(0, a.length - 1))
+    //combine the various smaller arrays of each card number to form one
+    // sorted array
+    const sortedLetters=[...aArray,...kArray,...qArray,...jArray]
+
+    return [...sortedLetters, ...sortedNumbers]
 }
+
