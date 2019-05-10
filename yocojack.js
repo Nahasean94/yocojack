@@ -1,5 +1,5 @@
+const cutMark=21
 const YocoJack = {
-
     /**
      * This function determines who the winner is based on their raw points.
      * Only if they tie do we go and use recursion to determine the highest
@@ -15,19 +15,19 @@ const YocoJack = {
         const playerBPoints = playerRawPoints(playerB)
 
 
-        if (playerAPoints > 21 && playerBPoints > 21) {
+        if (playerAPoints > cutMark && playerBPoints > cutMark) {
             playerAWins = false
             if (expectedResult === playerAWins) {
                 isExpectedResult = true
             }
             return ["Both lose", isExpectedResult]
-        } else if (playerAPoints > 21 && playerBPoints <= 21) {
+        } else if (playerAPoints > cutMark && playerBPoints <= cutMark) {
             playerAWins = false
             if (expectedResult === playerAWins) {
                 isExpectedResult = true
             }
             return ["Player B Wins", isExpectedResult]
-        } else if (playerAPoints <= 21 && playerBPoints > 21) {
+        } else if (playerAPoints <= cutMark && playerBPoints > cutMark) {
             playerAWins = true
             if (expectedResult === playerAWins) {
                 isExpectedResult = true
@@ -54,11 +54,11 @@ const YocoJack = {
 /** This function takes the suite a belongs to and returns a value to show
  *  which card is most import. This is to fulfil the condition S>H>C>D
  *
- * @param input
+ * @param suite
  * @returns {number}
  */
-function multiple(input) {
-    switch (input) {
+function multiple(suite) {
+    switch (suite) {
         case 'S':
             return 4
         case 'H':
@@ -76,34 +76,34 @@ function multiple(input) {
  * 2-9 are each worth the value on the card number
  * K, Q, J and 10 are each worth 10 points
  * A is worth 11 points
- * @param input
+ * @param cardNumber
  * @returns {number}
  */
-function cardNumberValue(input) {
+function cardNumberValue(cardNumber="") {
     //first check if the card is either of the values below and return
     // either 10 or 11 depending on the fulfilled condition.
     //This also helps filter out string values that cannot be parsed to numbers.
-    if (input === "10" || input === "J" || input === "Q" || input === "K") {
+    if (cardNumber === "10" || cardNumber === "J" || cardNumber === "Q" || cardNumber === "K") {
         return 10
     }
-    if (input === "A") {
+    if (cardNumber === "A") {
         return 11
     }
     //convert the remaining string input into a number. This means each card
     // holds a value of the card number
-    return Number.parseInt(input)
+    return Number.parseInt(cardNumber)
 }
 
 /**
  * This function tries to obtain the raw points of each holder. The raw
  * points are purely based on the value of the card number. This helps
- * determine if a player has more than 21 points or less, which is the 1st
+ * determine if a player has more than cutMark points or less, which is the 1st
  * step in eliminating a player or also determine who of the two has higher
- * points that are less than 21.
+ * points that are less than cutMark.
  * @param cards
  * @returns {number}
  */
-function playerRawPoints(cards) {
+function playerRawPoints(cards=[]) {
     // const cards = data.playerA
 
     let points = 0//holds the points for the given set of cards
@@ -124,7 +124,7 @@ function playerRawPoints(cards) {
  * @param arr
  * @returns {*[]}
  */
-function sortCardNumbers(arr) {
+function sortCardNumbers(arr=[]) {
 
     const numbers = []
     //the arrays below hold the various instances of each card number
@@ -174,14 +174,15 @@ function sortCardNumbers(arr) {
  * @param expectedResult
  * @returns {*[]}
  */
-function determineWinnerRecursively(playerA, playerB, expectedResult) {
+function determineWinnerRecursively(playerA=[], playerB=[], expectedResult=false) {
     //Sort the array of cards of each holder
     const sortedA = sortCardNumbers(playerA)
     const sortedB = sortCardNumbers(playerB)
     let isExpectedResult = false
     let playerAWins = false
 
-    let smallerIndex//this is used to help us avoid index out of bound exception
+    let smallerIndex=0//this is used to help us avoid index out of bound
+        // exception
     let index = 0
 
     if (sortedA.length > sortedB.length) {
@@ -220,12 +221,12 @@ function determineWinnerRecursively(playerA, playerB, expectedResult) {
  * Obtain the value of a card. We multiply the value of card suite with
  * value of card number to give precedence to suites in the following order
  * S>H>C>D
- * @param input
+ * @param card
  * @returns {number}
  */
-function cardValue(input) {
+function cardValue(card="") {
 
-    return multiple(input.charAt(input.length - 1)) * cardNumberValue(input.substring(0, input.length - 1))
+    return multiple(card.charAt(card.length - 1)) * cardNumberValue(card.substring(0, card.length - 1))
 
 }
 
