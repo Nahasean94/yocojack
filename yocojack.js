@@ -1,6 +1,5 @@
 const YocoJack = {
 
-
     /**
      * This function determines who the winner is based on their raw points.
      * Only if they tie do we go and use recursion to determine the highest
