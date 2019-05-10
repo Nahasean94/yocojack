@@ -10,13 +10,14 @@ const data = {
         "JH"
     ]
 }
+
 /** This function takes the suite a belongs to and returns a value to show
  *  which card is most import. This is to fulfil the condition S>H>C>D
  *
  * @param input
  * @returns {number}
  */
-function multiple  (input) {
+function multiple(input) {
     switch (input) {
         case 'S':
             return 4
@@ -37,8 +38,8 @@ function multiple  (input) {
  * @param input
  * @returns {number}
  */
- function cardNumberValue ( input) {
-     //first check if the card is either of the values below and return
+function cardNumberValue(input) {
+    //first check if the card is either of the values below and return
     // either 10 or 11 depending on the fulfilled condition.
     //This also helps filter out string values that cannot be parsed to numbers.
     if (input === "10" || input === "J" || input === "Q" || input === "K") {
@@ -61,7 +62,7 @@ function multiple  (input) {
  * @param cards
  * @returns {number}
  */
-function playerRawPoints (cards)  {
+function playerRawPoints(cards) {
     // const cards = data.playerA
 
     let points = 0//holds the points for the given set of cards
@@ -74,4 +75,54 @@ function playerRawPoints (cards)  {
     })
     //return the total points
     return points
+}
+
+/**
+ * This function determines who the winner is based on their raw points.
+ * Only if they tie do we go and use recursion to determine the highest
+ * card, etc
+ * @param playerA
+ * @param playerB
+ * @returns {string|*}
+ */
+function determineWinner(playerA, playerB, expectedResult) {
+    let isExpectedResult = false
+    let playerAWins = false
+    const playerAPoints = playerRawPoints(playerA)
+    const playerBPoints = playerRawPoints(playerB)
+
+
+    if (playerAPoints > 21 && playerBPoints > 21) {
+        playerAWins = false
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Both lose", isExpectedResult]
+    } else if (playerAPoints > 21 && playerBPoints <= 21) {
+        playerAWins = false
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Player B Wins", isExpectedResult]
+    } else if (playerAPoints <= 21 && playerBPoints > 21) {
+        playerAWins = true
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Player A Wins", isExpectedResult]
+    } else if (playerAPoints > playerBPoints) {
+        playerAWins = true
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Player A Wins", isExpectedResult]
+    } else if (playerBPoints > playerAPoints) {
+        playerAWins = false
+        if (expectedResult === playerAWins) {
+            isExpectedResult = true
+        }
+        return ["Player B Wins", isExpectedResult]
+    } else {
+        return determineWinnerRecursively(playerA, playerBPoints, expectedResult)
+    }
 }
