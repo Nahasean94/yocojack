@@ -57,7 +57,7 @@ function determineWinner(playerA, playerB, expectedResult) {
         }
         return ["Player B Wins", isExpectedResult]
     } else {
-        return determineWinnerRecursively(playerA, playerBPoints, expectedResult)
+        return determineWinnerRecursively(playerA, playerB, expectedResult)
     }
 }
 
@@ -174,3 +174,66 @@ function sortCardNumbers (arr)  {
     return [...sortedLetters, ...sortedNumbers]
 }
 
+/**
+ * Determine the winner by recursively comparing their cards.
+ * The assumption made here is that for the function to execute, only cases
+ * of card matches reach this far, e.g ['10S','6H'] and ['10H','6S'].
+ * @param playerA
+ * @param playerB
+ * @param expectedResult
+ * @returns {*[]}
+ */
+function determineWinnerRecursively  (playerA, playerB, expectedResult){
+    //Sort the array of cards of each holder
+    const sortedA = sortCardNumbers(playerA)
+    const sortedB = sortCardNumbers(playerB)
+    let isExpectedResult = false
+    let playerAWins = false
+
+    let smallerIndex//this is used to help us avoid index out of bound exception
+    let index = 0
+
+    if (sortedA.length > sortedB.length) {
+        smallerIndex = sortedB.length
+    } else {
+        smallerIndex = sortedB.length
+    }
+    /**
+     * Loop to compare the values at each index.
+     */
+
+    do {
+        let aValue = cardValue(sortedA[index])
+        let bValue = cardValue(sortedB[index])
+
+        if (aValue > bValue) {
+            playerAWins = true
+            if (expectedResult === playerAWins) {
+                isExpectedResult = true
+            }
+            return ["Player A Wins", isExpectedResult]
+        } else if (bValue > aValue) {
+            playerAWins = false
+            if (expectedResult === playerAWins) {
+                isExpectedResult = true
+            }
+            return ["Player B Wins", isExpectedResult]
+        }
+        index++
+        //exit the loop if index is greater equal or greater than the length
+        // of the smallest array
+    } while (index < smallerIndex)
+}
+
+/**
+ * Obtain the value of a card. We multiply the value of card suite with
+ * value of card number to give precedence to suites in the following order
+ * S>H>C>D
+ * @param input
+ * @returns {number}
+ */
+function cardValue (input)  {
+
+    return multiple(input.charAt(input.length - 1))*cardNumberValue(input.substring(0, input.length - 1))
+
+}
