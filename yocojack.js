@@ -1,64 +1,55 @@
-const data = {
-    "playerA": [
-        "QS",
-        "4C",
-        "JC"
-    ],
-    "playerAWins": false,
-    "playerB": [
-        "KS",
-        "JH"
-    ]
-}
-
-/**
- * This function determines who the winner is based on their raw points.
- * Only if they tie do we go and use recursion to determine the highest
- * card, etc
- * @param playerA
- * @param playerB
- * @returns {string|*}
- */
-function determineWinner(playerA, playerB, expectedResult) {
-    let isExpectedResult = false
-    let playerAWins = false
-    const playerAPoints = playerRawPoints(playerA)
-    const playerBPoints = playerRawPoints(playerB)
+const YocoJack = {
 
 
-    if (playerAPoints > 21 && playerBPoints > 21) {
-        playerAWins = false
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
+    /**
+     * This function determines who the winner is based on their raw points.
+     * Only if they tie do we go and use recursion to determine the highest
+     * card, etc
+     * @param playerA
+     * @param playerB
+     * @returns {string|*}
+     */
+    determineWinner: (playerA, playerB, expectedResult) => {
+        let isExpectedResult = false
+        let playerAWins = false
+        const playerAPoints = playerRawPoints(playerA)
+        const playerBPoints = playerRawPoints(playerB)
+
+
+        if (playerAPoints > 21 && playerBPoints > 21) {
+            playerAWins = false
+            if (expectedResult === playerAWins) {
+                isExpectedResult = true
+            }
+            return ["Both lose", isExpectedResult]
+        } else if (playerAPoints > 21 && playerBPoints <= 21) {
+            playerAWins = false
+            if (expectedResult === playerAWins) {
+                isExpectedResult = true
+            }
+            return ["Player B Wins", isExpectedResult]
+        } else if (playerAPoints <= 21 && playerBPoints > 21) {
+            playerAWins = true
+            if (expectedResult === playerAWins) {
+                isExpectedResult = true
+            }
+            return ["Player A Wins", isExpectedResult]
+        } else if (playerAPoints > playerBPoints) {
+            playerAWins = true
+            if (expectedResult === playerAWins) {
+                isExpectedResult = true
+            }
+            return ["Player A Wins", isExpectedResult]
+        } else if (playerBPoints > playerAPoints) {
+            playerAWins = false
+            if (expectedResult === playerAWins) {
+                isExpectedResult = true
+            }
+            return ["Player B Wins", isExpectedResult]
+        } else {
+            return determineWinnerRecursively(playerA, playerB, expectedResult)
         }
-        return ["Both lose", isExpectedResult]
-    } else if (playerAPoints > 21 && playerBPoints <= 21) {
-        playerAWins = false
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
-        }
-        return ["Player B Wins", isExpectedResult]
-    } else if (playerAPoints <= 21 && playerBPoints > 21) {
-        playerAWins = true
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
-        }
-        return ["Player A Wins", isExpectedResult]
-    } else if (playerAPoints > playerBPoints) {
-        playerAWins = true
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
-        }
-        return ["Player A Wins", isExpectedResult]
-    } else if (playerBPoints > playerAPoints) {
-        playerAWins = false
-        if (expectedResult === playerAWins) {
-            isExpectedResult = true
-        }
-        return ["Player B Wins", isExpectedResult]
-    } else {
-        return determineWinnerRecursively(playerA, playerB, expectedResult)
-    }
+    },
 }
 
 /** This function takes the suite a belongs to and returns a value to show
@@ -79,6 +70,7 @@ function multiple(input) {
             return 1
     }
 }
+
 
 /**
  * This function returns the value of the card number.
@@ -133,7 +125,7 @@ function playerRawPoints(cards) {
  * @param arr
  * @returns {*[]}
  */
-function sortCardNumbers (arr)  {
+function sortCardNumbers(arr) {
 
     const numbers = []
     //the arrays below hold the various instances of each card number
@@ -169,7 +161,7 @@ function sortCardNumbers (arr)  {
     const sortedNumbers = numbers.sort((a, b) => b.substring(0, b.length - 1) - a.substring(0, a.length - 1))
     //combine the various smaller arrays of each card number to form one
     // sorted array
-    const sortedLetters=[...aArray,...kArray,...qArray,...jArray]
+    const sortedLetters = [...aArray, ...kArray, ...qArray, ...jArray]
 
     return [...sortedLetters, ...sortedNumbers]
 }
@@ -183,7 +175,7 @@ function sortCardNumbers (arr)  {
  * @param expectedResult
  * @returns {*[]}
  */
-function determineWinnerRecursively  (playerA, playerB, expectedResult){
+function determineWinnerRecursively(playerA, playerB, expectedResult) {
     //Sort the array of cards of each holder
     const sortedA = sortCardNumbers(playerA)
     const sortedB = sortCardNumbers(playerB)
@@ -232,8 +224,10 @@ function determineWinnerRecursively  (playerA, playerB, expectedResult){
  * @param input
  * @returns {number}
  */
-function cardValue (input)  {
+function cardValue(input) {
 
-    return multiple(input.charAt(input.length - 1))*cardNumberValue(input.substring(0, input.length - 1))
+    return multiple(input.charAt(input.length - 1)) * cardNumberValue(input.substring(0, input.length - 1))
 
 }
+
+module.exports = YocoJack
